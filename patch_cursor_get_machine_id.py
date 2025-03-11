@@ -41,7 +41,7 @@ def get_cursor_paths() -> Tuple[str, str]:
     """
     system = platform.system()
 
-    paths_map = {
+    paths_map: dict[str, dict[str, str | list[str]]] = {
         "Darwin": {
             "base": "/Applications/Cursor.app/Contents/Resources/app",
             "package": "package.json",
@@ -49,7 +49,14 @@ def get_cursor_paths() -> Tuple[str, str]:
         },
         "Windows": {
             "base": os.path.join(
-                os.getenv("USERAPPPATH") or os.path.join(os.getenv("LOCALAPPDATA", ""), "Programs", "Cursor", "resources", "app")
+                os.getenv("USERAPPPATH")
+                or os.path.join(
+                    os.getenv("LOCALAPPDATA", ""),
+                    "Programs",
+                    "Cursor",
+                    "resources",
+                    "app",
+                )
             ),
             "package": "package.json",
             "main": "out/main.js",
@@ -61,6 +68,16 @@ def get_cursor_paths() -> Tuple[str, str]:
         },
     }
 
+    if not isinstance(paths_map["Linux"]["bases"], list):
+        logger.error(f"Linux 路径列表格式错误: {paths_map['Linux']['bases']}")
+        raise OSError("Linux 路径列表格式错误")
+    if not isinstance(paths_map["Linux"]["package"], str):
+        logger.error(f"Linux 路径列表格式错误: {paths_map['Linux']['package']}")
+        raise OSError("Linux 路径列表格式错误")
+    if not isinstance(paths_map["Linux"]["main"], str):
+        logger.error(f"Linux 路径列表格式错误: {paths_map['Linux']['main']}")
+        raise OSError("Linux 路径列表格式错误")
+
     if system not in paths_map:
         raise OSError(f"不支持的操作系统: {system}")
 
@@ -71,18 +88,42 @@ def get_cursor_paths() -> Tuple[str, str]:
                 return (pkg_path, os.path.join(base, paths_map["Linux"]["main"]))
         raise OSError("在 Linux 系统上未找到 Cursor 安装路径")
 
+    if not isinstance(paths_map[system]["base"], str):  # only for type hint
+        logger.error(f"Windows 路径列表格式错误: {paths_map['Windows']['base']}")
+        raise OSError("Windows 路径列表格式错误")
+
     base_path = paths_map[system]["base"]
+
+    if base_path is None:  # only for type hint
+        logger.error(f"Windows 路径列表格式错误: {paths_map['Windows']['base']}")
+        raise OSError("Windows 路径列表格式错误")
+    if not isinstance(base_path, str):  # only for type hint
+        logger.error(f"Windows 路径列表格式错误: {paths_map['Windows']['base']}")
+        raise OSError("Windows 路径列表格式错误")
+
     # 判断Windows是否存在这个文件夹,如果不存在,提示需要创建软连接后重试
-    if system  == "Windows":
+    if system == "Windows":
         if not os.path.exists(base_path):
-            logging.info('可能您的Cursor不是默认安装路径,请创建软连接,命令如下:')
-            logging.info('cmd /c mklink /d "C:\\Users\\<username>\\AppData\\Local\\Programs\\Cursor" "默认安装路径"')
-            logging.info('例如:')
-            logging.info('cmd /c mklink /d "C:\\Users\\<username>\\AppData\\Local\\Programs\\Cursor" "D:\\SoftWare\\cursor"')
+            logging.info("可能您的Cursor不是默认安装路径,请创建软连接,命令如下:")
+            logging.info(
+                'cmd /c mklink /d "C:\\Users\\<username>\\AppData\\Local\\Programs\\Cursor" "默认安装路径"'
+            )
+            logging.info("例如:")
+            logging.info(
+                'cmd /c mklink /d "C:\\Users\\<username>\\AppData\\Local\\Programs\\Cursor" "D:\\SoftWare\\cursor"'
+            )
             input("\n程序执行完毕，按回车键退出...")
+
+    if not isinstance(paths_map[system]["package"], str):  # only for type hint
+        logger.error(f"Windows 路径列表格式错误: {paths_map['Windows']['package']}")
+        raise OSError("Windows 路径列表格式错误")
+    if not isinstance(paths_map[system]["main"], str):  # only for type hint
+        logger.error(f"Windows 路径列表格式错误: {paths_map['Windows']['main']}")
+        raise OSError("Windows 路径列表格式错误")
+
     return (
-        os.path.join(base_path, paths_map[system]["package"]),
-        os.path.join(base_path, paths_map[system]["main"]),
+        os.path.join(base_path, paths_map[system]["package"]),  # type: ignore
+        os.path.join(base_path, paths_map[system]["main"]),  # type: ignore
     )
 
 

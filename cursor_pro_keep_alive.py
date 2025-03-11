@@ -1,29 +1,27 @@
-import os
-import platform
 import json
+import os
 import sys
-from colorama import Fore, Style
 from enum import Enum
 from typing import Optional
 
-from exit_cursor import ExitCursor
 import go_cursor_help
 import patch_cursor_get_machine_id
+from exit_cursor import ExitCursor
 from reset_machine import MachineIDResetter
 
 os.environ["PYTHONVERBOSE"] = "0"
 os.environ["PYINSTALLER_VERBOSE"] = "0"
 
-import time
-import random
-from cursor_auth_manager import CursorAuthManager
 import os
-from logger import logging
+import random
+import time
+
 from browser_utils import BrowserManager
-from get_email_code import EmailVerificationHandler
-from logo import print_logo
 from config import Config
-from datetime import datetime
+from cursor_auth_manager import CursorAuthManager
+from get_email_code import EmailVerificationHandler
+from logger import logging
+from logo import print_logo
 
 # 定义 EMOJI 字典
 EMOJI = {"ERROR": "❌", "WARNING": "⚠️", "INFO": "ℹ️"}

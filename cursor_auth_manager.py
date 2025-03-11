@@ -1,5 +1,5 @@
-import sqlite3
 import os
+import sqlite3
 import sys
 
 
@@ -15,14 +15,16 @@ class CursorAuthManager:
             self.db_path = os.path.join(
                 appdata, "Cursor", "User", "globalStorage", "state.vscdb"
             )
-        elif sys.platform == "darwin": # macOS
-            self.db_path = os.path.abspath(os.path.expanduser(
-                "~/Library/Application Support/Cursor/User/globalStorage/state.vscdb"
-            ))
-        elif sys.platform == "linux" : # Linux 和其他类Unix系统
-            self.db_path = os.path.abspath(os.path.expanduser(
-                "~/.config/Cursor/User/globalStorage/state.vscdb"
-            ))
+        elif sys.platform == "darwin":  # macOS
+            self.db_path = os.path.abspath(
+                os.path.expanduser(
+                    "~/Library/Application Support/Cursor/User/globalStorage/state.vscdb"
+                )
+            )
+        elif sys.platform == "linux":  # Linux 和其他类Unix系统
+            self.db_path = os.path.abspath(
+                os.path.expanduser("~/.config/Cursor/User/globalStorage/state.vscdb")
+            )
         else:
             raise NotImplementedError(f"不支持的操作系统: {sys.platform}")
 

@@ -30,4 +30,4 @@ python build.py
 # Keep window open
 echo "Build completed!"
 echo "Press any key to exit..."
-read -n 1 
+read -n 1
